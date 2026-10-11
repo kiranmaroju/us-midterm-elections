@@ -96,7 +96,7 @@ export async function fetchManifoldOdds() {
       }
 
       if (raceId && demProb !== null && repProb !== null) {
-        // Upsert race odds
+        const stateCode = raceId.includes('national') ? 'US' : (raceId.split('-')[1]?.toUpperCase() || 'US');
         await execute(`
           INSERT INTO races (id, chamber, state_code, title, dem_win_prob, rep_win_prob, is_battleground, rating)
           VALUES (?, ?, ?, ?, ?, ?, TRUE, ?)
@@ -106,7 +106,7 @@ export async function fetchManifoldOdds() {
         `, [
           raceId, 
           raceId.startsWith('senate') ? 'senate' : 'house',
-          raceId.split('-')[1]?.toUpperCase() || 'US',
+          stateCode,
           `2026 ${raceId.toUpperCase()} Race`,
           demProb,
           repProb,
