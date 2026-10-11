@@ -1,0 +1,5 @@
+node_modules/
+*.log
+*.bak
+local_db.json
+.DS_Store

@@ -1,0 +1,33 @@
+{
+  "name": "us-midterm-elections-pwa",
+  "version": "1.0.0",
+  "description": "Mobile-First PWA for 2026 US Midterm Elections with Real-Time Prediction Odds, Authentic Data Feeds, and Admin Studio",
+  "main": "server/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "node --watch server/index.js",
+    "db:init": "node server/db/init_db.js",
+    "jobs:run": "node server/jobs/runner.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "js-yaml": "^4.1.0",
+    "mysql2": "^3.12.0",
+    "xml2js": "^0.6.2"
+  },
+  "keywords": [
+    "elections",
+    "us-midterm",
+    "pwa",
+    "prediction-markets",
+    "manifold",
+    "fec",
+    "seo",
+    "geo"
+  ],
+  "author": "Kiran Maroju",
+  "license": "MIT"
+}

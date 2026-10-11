@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  
+  <!-- Primary SEO Meta Tags -->
+  <title id="meta-title">US Midterm Elections 2026 | Real-Time Win Odds, Candidate Dossiers & Live Pulse</title>
+  <meta name="description" id="meta-desc" content="Live, authentic coverage of the 2026 US Midterm Elections. Track Senate & House battlegrounds, real-time prediction market win odds, verified candidate bios, and breaking election news.">
+  <meta name="keywords" id="meta-keywords" content="US midterm elections 2026, Senate races 2026, House battleground seats, win probabilities, prediction markets, election polls, candidates roster, Politico news, live election tracker">
+  <link rel="canonical" id="meta-canonical" href="https://usmidterm.innovat.space/">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+
+  <!-- Open Graph / Facebook / LinkedIn -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://usmidterm.innovat.space/">
+  <meta property="og:title" id="og-title" content="US Midterm Elections 2026 | Real-Time Win Probabilities">
+  <meta property="og:description" id="og-desc" content="Track real-time Senate & House battleground odds from prediction markets, verified FEC candidate filings, and breaking news.">
+  <meta property="og:image" id="og-image" content="https://usmidterm.innovat.space/assets/og-preview.png">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" id="tw-title" content="US Midterm Elections 2026 | Live Battleground Pulse">
+  <meta name="twitter:description" id="tw-desc" content="Real-time win odds, certified candidate dossiers, and live political news ticker.">
+  <meta name="twitter:image" id="tw-image" content="https://usmidterm.innovat.space/assets/og-preview.png">
+
+  <!-- Mobile Web App & PWA Settings -->
+  <meta name="theme-color" content="#0a0e17">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="US Midterms">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%232563eb'/><text x='50' y='65' font-size='50' font-family='sans-serif' text-anchor='middle' fill='white'>🏛️</text></svg>">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="/css/styles.css">
+
+  <!-- Structured Data JSON-LD for Search Engines & AI Tools -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://usmidterm.innovat.space/#website",
+        "url": "https://usmidterm.innovat.space/",
+        "name": "US Midterm Elections 2026 Hub",
+        "description": "Real-time non-partisan US Midterm Elections intelligence platform tracking win probabilities, FEC candidates, and breaking campaign news.",
+        "publisher": {
+          "@type": "Organization",
+          "name": "Innovat Space Political Intelligence",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://usmidterm.innovat.space/assets/logo.png"
+          }
+        }
+      },
+      {
+        "@type": "Event",
+        "@id": "https://usmidterm.innovat.space/#election-event",
+        "name": "2026 United States Midterm Elections",
+        "startDate": "2026-11-03",
+        "endDate": "2026-11-03",
+        "eventStatus": "https://schema.org/EventScheduled",
+        "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+        "location": {
+          "@type": "Place",
+          "name": "United States",
+          "address": {
+            "@type": "PostalAddress",
+            "addressCountry": "US"
+          }
+        },
+        "description": "Federal elections deciding all 435 voting seats in the House of Representatives and 33-35 Class II seats in the United States Senate."
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Top Announcement Banner -->
+  <div class="announcement-banner" id="announcement-bar">
+    <span id="announcement-text">🔴 2026 Midterm Battleground Tracker Active — Real-time odds updated every 5 mins from prediction markets.</span>
+    <button class="icon-btn" style="width:24px;height:24px;font-size:0.7rem;background:none;border:none;color:#fbbf24;" onclick="document.getElementById('announcement-bar').style.display='none'">✕</button>
+  </div>
+
+  <!-- Sticky App Header -->
+  <header class="app-header">
+    <div class="header-inner">
+      <a href="#overview" class="brand-badge">
+        <div class="brand-icon">🏛️</div>
+        <div class="brand-text">
+          <h1>US MIDTERMS</h1>
+          <span class="sub">2026 LIVE PULSE</span>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <div class="live-indicator">
+          <div class="pulse-dot"></div>
+          <span>LIVE</span>
+        </div>
+        <button class="icon-btn" id="theme-toggle" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="app-container" style="padding-top: 16px;">
+
+    <!-- ========================================================
+         VIEW 1: NATIONAL OVERVIEW & BALANCE OF POWER
+         ======================================================== -->
+    <section id="view-overview" class="app-view">
+      <!-- Senate Balance of Power Card -->
+      <div class="card" id="card-senate-balance">
+        <div class="card-title">
+          <span>Senate Balance of Power</span>
+          <span class="badge badge-toss" id="senate-tossup-count">Toss-ups: 7</span>
+        </div>
+        <p style="font-size: 0.82rem; color: var(--text-muted);">
+          Market consensus for Senate Control (33-35 contested seats)
+        </p>
+        <div class="balance-bar-container">
+          <div class="balance-labels">
+            <span style="color: var(--dem-blue);">Democrats: <strong id="senate-dem-prob">--%</strong></span>
+            <span style="color: var(--rep-red);"><strong id="senate-rep-prob">--%</strong> :Republicans</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-segment-dem" id="bar-senate-dem" style="width: 50%;">Dem</div>
+            <div class="bar-segment-rep" id="bar-senate-rep" style="width: 50%;">Rep</div>
+          </div>
+        </div>
+        <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 6px; display: flex; justify-content: space-between;">
+          <span>Data: Manifold Markets Real-Time Consensus</span>
+          <span id="senate-sync-time">Updated Live</span>
+        </div>
+      </div>
+
+      <!-- House Balance of Power Card -->
+      <div class="card" id="card-house-balance">
+        <div class="card-title">
+          <span>House of Representatives (435 Seats)</span>
+          <span class="badge badge-toss">218 to Win</span>
+        </div>
+        <p style="font-size: 0.82rem; color: var(--text-muted);">
+          Market consensus for House Majority
+        </p>
+        <div class="balance-bar-container">
+          <div class="balance-labels">
+            <span style="color: var(--dem-blue);">Democrats: <strong id="house-dem-prob">--%</strong></span>
+            <span style="color: var(--rep-red);"><strong id="house-rep-prob">--%</strong> :Republicans</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-segment-dem" id="bar-house-dem" style="width: 50%;">Dem</div>
+            <div class="bar-segment-rep" id="bar-house-rep" style="width: 50%;">Rep</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hexagonal Seat Cartogram Visualizer -->
+      <div class="card">
+        <div class="card-title">
+          <span>Interactive Battleground Map</span>
+          <span class="badge badge-toss">Touch a State</span>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px;">
+          Equal-area cartogram representing contested Senate & battleground seats.
+        </p>
+        <div class="hex-map-container">
+          <div class="hex-grid" id="hex-grid-container">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+        <div style="display:flex; justify-content:center; gap:12px; margin-top:8px; font-size:0.75rem; color:var(--text-muted);">
+          <span><span style="color:var(--dem-blue)">■</span> Lean D</span>
+          <span><span style="color:var(--toss-amber)">■</span> Toss-up</span>
+          <span><span style="color:var(--rep-red)">■</span> Lean R</span>
+        </div>
+      </div>
+
+      <!-- Top Battleground Showdowns -->
+      <div class="card">
+        <div class="card-title">
+          <span>Top Battleground Showdowns</span>
+          <a href="#senate" style="font-size: 0.8rem; color: var(--dem-blue); text-decoration: none;">View All →</a>
+        </div>
+        <div class="race-grid" id="top-battlegrounds-grid">
+          <div style="text-align: center; padding: 20px; color: var(--text-dim);">Loading authentic live race data...</div>
+        </div>
+      </div>
+
+      <!-- Live News Ticker Card -->
+      <div class="card">
+        <div class="card-title">
+          <span>Breaking Campaign News</span>
+          <a href="#news" style="font-size: 0.8rem; color: var(--dem-blue); text-decoration: none;">All News →</a>
+        </div>
+        <div id="overview-news-list">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         VIEW 2: SENATE RACES
+         ======================================================== -->
+    <section id="view-senate" class="app-view" style="display: none;">
+      <div class="card">
+        <div class="card-title">
+          <span>2026 US Senate Races</span>
+          <span class="badge badge-dem">Class II Contested</span>
+        </div>
+        <div class="search-container">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="senate-search-input" class="search-input" placeholder="Search state or candidate (e.g. Maine, Cornyn)...">
+        </div>
+        <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 12px;">
+          <button class="btn btn-secondary btn-sm active-filter" onclick="filterSenateRaces('all')">All</button>
+          <button class="btn btn-secondary btn-sm" onclick="filterSenateRaces('battleground')">Battlegrounds</button>
+          <button class="btn btn-secondary btn-sm" onclick="filterSenateRaces('tossup')">Toss-ups</button>
+          <button class="btn btn-secondary btn-sm" onclick="filterSenateRaces('lean_d')">Lean D</button>
+          <button class="btn btn-secondary btn-sm" onclick="filterSenateRaces('lean_r')">Lean R</button>
+        </div>
+        <div class="race-grid" id="senate-races-grid">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         VIEW 3: HOUSE RACES
+         ======================================================== -->
+    <section id="view-house" class="app-view" style="display: none;">
+      <div class="card">
+        <div class="card-title">
+          <span>House Congressional Districts</span>
+          <span class="badge badge-rep">Battle for 218</span>
+        </div>
+        <div class="search-container">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="house-search-input" class="search-input" placeholder="Search state or district (e.g. CA-13, TX-21)...">
+        </div>
+        <div class="race-grid" id="house-races-grid">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         VIEW 4: LIVE NEWS TICKER
+         ======================================================== -->
+    <section id="view-news" class="app-view" style="display: none;">
+      <div class="card">
+        <div class="card-title">
+          <span>Real-Time Campaign Wire</span>
+          <span class="badge badge-dem">Politico • NPR • The Hill</span>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">
+          Continuous live journalism from authentic non-partisan political news desks.
+        </p>
+        <div class="search-container">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="news-search-input" class="search-input" placeholder="Filter news by candidate, state, or topic...">
+        </div>
+        <div id="full-news-list">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         VIEW 5: ADMIN STUDIO (FULL SYSTEM CONTROL)
+         ======================================================== -->
+    <section id="view-admin" class="app-view" style="display: none;">
+      <!-- Admin Login Box (if not unlocked) -->
+      <div class="card" id="admin-login-box">
+        <div class="card-title">
+          <span>Admin Portal Authentication</span>
+          <span class="admin-badge">Secure Access</span>
+        </div>
+        <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 12px;">
+          Enter the administrator secret key to manage background ingestion jobs, candidate details, probabilities, and SEO settings.
+        </p>
+        <div class="form-group">
+          <label class="form-label">Admin Secret Key</label>
+          <input type="password" id="admin-key-input" class="form-input" placeholder="Enter admin key..." value="Midterm2026!AdminSec#">
+        </div>
+        <button class="btn btn-primary" onclick="unlockAdminPortal()">Unlock Admin Studio</button>
+      </div>
+
+      <!-- Admin Management Studio (Unlocked) -->
+      <div id="admin-dashboard-panel" style="display: none;">
+        <!-- Top Health Bar -->
+        <div class="card">
+          <div class="card-title">
+            <span>Admin Studio & System Health</span>
+            <span class="badge badge-dem" id="admin-db-status">Database: Active</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; text-align: center;">
+            <div style="background: var(--bg-surface); padding: 10px; border-radius: var(--radius-sm);">
+              <div style="font-size: 0.72rem; color: var(--text-dim);">Total Races</div>
+              <div style="font-size: 1.25rem; font-weight: 800;" id="stat-races">--</div>
+            </div>
+            <div style="background: var(--bg-surface); padding: 10px; border-radius: var(--radius-sm);">
+              <div style="font-size: 0.72rem; color: var(--text-dim);">FEC Candidates</div>
+              <div style="font-size: 1.25rem; font-weight: 800;" id="stat-candidates">--</div>
+            </div>
+            <div style="background: var(--bg-surface); padding: 10px; border-radius: var(--radius-sm);">
+              <div style="font-size: 0.72rem; color: var(--text-dim);">Live Articles</div>
+              <div style="font-size: 1.25rem; font-weight: 800;" id="stat-news">--</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Automated Jobs & Schedule Manager -->
+        <div class="card">
+          <div class="card-title">
+            <span>Automated Ingestion Jobs</span>
+            <button class="btn btn-secondary btn-sm" onclick="loadAdminJobs()">Refresh Status</button>
+          </div>
+          <div id="admin-jobs-list" style="display: flex; flex-direction: column; gap: 10px;">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Audit Logs Viewer -->
+        <div class="card">
+          <div class="card-title">
+            <span>Job Execution Audit Logs</span>
+            <button class="btn btn-secondary btn-sm" onclick="loadAuditLogs()">Refresh Logs</button>
+          </div>
+          <div id="admin-audit-logs" style="max-height: 280px; overflow-y: auto; font-family: monospace; font-size: 0.78rem;">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Candidate & Probability Override Manager -->
+        <div class="card">
+          <div class="card-title">
+            <span>Candidate & Probability Manager</span>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px;">
+            Search and edit candidate info, photos, and manual probability overrides.
+          </p>
+          <div class="search-container">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="admin-cand-search" class="search-input" placeholder="Search candidate to edit..." oninput="searchAdminCandidates(this.value)">
+          </div>
+          <div id="admin-candidates-list" style="max-height: 320px; overflow-y: auto;">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Global Site Configuration & SEO Studio -->
+        <div class="card">
+          <div class="card-title">
+            <span>SEO & Site Configuration Studio</span>
+            <button class="btn btn-primary btn-sm" onclick="saveSiteConfig()">Save Settings</button>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Global Site Title (SEO)</label>
+            <input type="text" id="cfg-site-title" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Meta Description</label>
+            <textarea id="cfg-meta-desc" class="form-textarea" rows="2"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Target Keywords</label>
+            <input type="text" id="cfg-keywords" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Top Announcement Banner Text</label>
+            <input type="text" id="cfg-banner-text" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">AI / GEO Search Directive (for llms.txt)</label>
+            <textarea id="cfg-llm-directive" class="form-textarea" rows="2"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================
+       RACE & CANDIDATE DETAIL MODAL
+       ======================================================== -->
+  <div class="modal-overlay" id="race-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <h2 id="modal-race-title" style="font-size: 1.15rem; font-family: var(--font-heading);">Race Details</h2>
+          <span class="badge badge-toss" id="modal-race-rating">TOSSUP</span>
+        </div>
+        <button class="icon-btn" onclick="closeModal()">✕</button>
+      </div>
+
+      <!-- Probability Gauge -->
+      <div class="card" style="margin-bottom: 12px; background: var(--bg-surface);">
+        <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 0.9rem;">
+          <span style="color: var(--dem-blue);">Dem Win Odds: <strong id="modal-dem-prob">--%</strong></span>
+          <span style="color: var(--rep-red);"><strong id="modal-rep-prob">--%</strong> :Rep Win Odds</span>
+        </div>
+        <div class="bar-track" style="margin-top: 6px;">
+          <div class="bar-segment-dem" id="modal-bar-dem" style="width: 50%;"></div>
+          <div class="bar-segment-rep" id="modal-bar-rep" style="width: 50%;"></div>
+        </div>
+      </div>
+
+      <!-- Candidate Showdown -->
+      <h3 style="font-size: 0.9rem; font-weight: 700; margin-bottom: 8px;">Candidates Head-to-Head</h3>
+      <div class="candidate-showdown" id="modal-candidates-container">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- AI Fact & FAQ Accordion -->
+      <h3 style="font-size: 0.9rem; font-weight: 700; margin: 12px 0 6px;">Race FAQ & Verified Insights</h3>
+      <div id="modal-faq-container" style="font-size: 0.82rem; color: var(--text-muted);">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Candidate Edit Modal (Admin) -->
+  <div class="modal-overlay" id="edit-candidate-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 style="font-size: 1.1rem;">Edit Candidate</h2>
+        <button class="icon-btn" onclick="document.getElementById('edit-candidate-modal').style.display='none'">✕</button>
+      </div>
+      <input type="hidden" id="edit-cand-id">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input type="text" id="edit-cand-name" class="form-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Political Party</label>
+        <select id="edit-cand-party" class="form-select">
+          <option value="Democrat">Democrat</option>
+          <option value="Republican">Republican</option>
+          <option value="Independent">Independent</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Portrait Photo URL</label>
+        <input type="text" id="edit-cand-photo" class="form-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Biographical Extract</label>
+        <textarea id="edit-cand-bio" class="form-textarea" rows="2"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Manual Win Probability Override (%)</label>
+        <input type="number" id="edit-cand-override" class="form-input" placeholder="Leave empty for market consensus">
+      </div>
+      <button class="btn btn-primary" style="width: 100%; margin-top: 10px;" onclick="saveCandidateEdit()">Save Candidate Updates</button>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="bottom-nav">
+    <a href="#overview" class="nav-item active" data-view="view-overview">
+      <span class="nav-icon">📊</span>
+      <span>Overview</span>
+    </a>
+    <a href="#senate" class="nav-item" data-view="view-senate">
+      <span class="nav-icon">🏛️</span>
+      <span>Senate</span>
+    </a>
+    <a href="#house" class="nav-item" data-view="view-house">
+      <span class="nav-icon">🗳️</span>
+      <span>House</span>
+    </a>
+    <a href="#news" class="nav-item" data-view="view-news">
+      <span class="nav-icon">📰</span>
+      <span>News</span>
+    </a>
+    <a href="#admin" class="nav-item" data-view="view-admin">
+      <span class="nav-icon">⚙️</span>
+      <span>Admin</span>
+    </a>
+  </nav>
+
+  <!-- Application Script -->
+  <script src="/js/app.js"></script>
+</body>
+</html>
