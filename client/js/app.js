@@ -141,9 +141,13 @@ async function loadOverview() {
     // Render Overview News
     renderOverviewNews(data.breakingNews);
 
-    // Render Hex Map
-    renderHexMap(data.topBattlegrounds);
+    // Render Interactive Cartogram Map for Overview
+    renderInteractiveMap('map-overview-container', 'drawer-overview', 'overview');
 
+    // Prefetch all races for instant state drawer lookup
+    if (!state.races || state.races.length === 0) {
+      fetch('/api/races').then(r => r.json()).then(races => { state.races = races; }).catch(() => {});
+    }
   } catch (err) {
     console.error('Error loading overview:', err);
   }
@@ -208,33 +212,224 @@ function renderOverviewNews(articles) {
   `).join('');
 }
 
-// Interactive Hex Cartogram
-function renderHexMap(battlegrounds) {
-  const container = document.getElementById('hex-grid-container');
-  // State layout matrix (50 US States representation)
-  const states = [
-    'WA','ID','MT','ND','MN','IL','WI','MI','NY','VT','ME',
-    'OR','NV','WY','SD','IA','IN','OH','PA','NJ','MA','NH',
-    'CA','UT','CO','NE','MO','KY','WV','VA','MD','DE','CT',
-    'AZ','NM','KS','AR','TN','NC','SC','DC','RI',
-    'TX','OK','LA','MS','AL','GA','FL','AK','HI'
-  ];
+// Full US States Dictionary & 8x11 Grid Matrix
+const US_STATE_NAMES = {
+  'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas', 'CA': 'California',
+  'CO': 'Colorado', 'CT': 'Connecticut', 'DE': 'Delaware', 'FL': 'Florida', 'GA': 'Georgia',
+  'HI': 'Hawaii', 'ID': 'Idaho', 'IL': 'Illinois', 'IN': 'Indiana', 'IA': 'Iowa',
+  'KS': 'Kansas', 'KY': 'Kentucky', 'LA': 'Louisiana', 'ME': 'Maine', 'MD': 'Maryland',
+  'MA': 'Massachusetts', 'MI': 'Michigan', 'MN': 'Minnesota', 'MS': 'Mississippi', 'MO': 'Missouri',
+  'MT': 'Montana', 'NE': 'Nebraska', 'NV': 'Nevada', 'NH': 'New Hampshire', 'NJ': 'New Jersey',
+  'NM': 'New Mexico', 'NY': 'New York', 'NC': 'North Carolina', 'ND': 'North Dakota', 'OH': 'Ohio',
+  'OK': 'Oklahoma', 'OR': 'Oregon', 'PA': 'Pennsylvania', 'RI': 'Rhode Island', 'SC': 'South Carolina',
+  'SD': 'South Dakota', 'TN': 'Tennessee', 'TX': 'Texas', 'UT': 'Utah', 'VT': 'Vermont',
+  'VA': 'Virginia', 'WA': 'Washington', 'WV': 'West Virginia', 'WI': 'Wisconsin', 'WY': 'Wyoming', 'DC': 'District of Columbia'
+};
 
-  const bgMap = new Map();
-  (battlegrounds || []).forEach(b => bgMap.set(b.state_code, b));
+// 33 Class II Senate States Contested in 2026 (20 Rep, 13 Dem)
+const SENATE_CLASS_II = {
+  'AL': 'Republican', 'AK': 'Republican', 'AR': 'Republican', 'ID': 'Republican',
+  'IA': 'Republican', 'KS': 'Republican', 'KY': 'Republican', 'LA': 'Republican',
+  'ME': 'Republican', 'MS': 'Republican', 'MT': 'Republican', 'NE': 'Republican',
+  'NC': 'Republican', 'OK': 'Republican', 'SC': 'Republican', 'SD': 'Republican',
+  'TN': 'Republican', 'TX': 'Republican', 'WV': 'Republican', 'WY': 'Republican',
+  'CO': 'Democrat', 'DE': 'Democrat', 'GA': 'Democrat', 'IL': 'Democrat',
+  'MA': 'Democrat', 'MI': 'Democrat', 'MN': 'Democrat', 'NH': 'Democrat',
+  'NJ': 'Democrat', 'NM': 'Democrat', 'OR': 'Democrat', 'RI': 'Democrat', 'VA': 'Democrat'
+};
 
-  container.innerHTML = states.slice(0, 44).map(st => {
-    const bg = bgMap.get(st);
-    let colorClass = 'hex-node';
-    if (bg) {
-      if (bg.dem_win_prob > bg.rep_win_prob + 5) colorClass += ' hex-dem';
-      else if (bg.rep_win_prob > bg.dem_win_prob + 5) colorClass += ' hex-rep';
-      else colorClass += ' hex-toss';
+// Key House Battleground States
+const HOUSE_BATTLEGROUND_STATES = new Set(['CA', 'NY', 'PA', 'TX', 'MI', 'AZ', 'OH', 'NC', 'WI', 'VA', 'NV']);
+
+const US_CARTOGRAM_LAYOUT = [
+  { st: 'AK', r: 0, c: 0 }, { st: 'ME', r: 0, c: 10 },
+  { st: 'WI', r: 1, c: 5 }, { st: 'VT', r: 1, c: 9 }, { st: 'NH', r: 1, c: 10 },
+  { st: 'WA', r: 2, c: 0 }, { st: 'ID', r: 2, c: 1 }, { st: 'MT', r: 2, c: 2 }, { st: 'ND', r: 2, c: 3 }, { st: 'MN', r: 2, c: 4 }, { st: 'IL', r: 2, c: 5 }, { st: 'MI', r: 2, c: 6 }, { st: 'NY', r: 2, c: 8 }, { st: 'MA', r: 2, c: 9 }, { st: 'CT', r: 2, c: 10 },
+  { st: 'OR', r: 3, c: 0 }, { st: 'NV', r: 3, c: 1 }, { st: 'WY', r: 3, c: 2 }, { st: 'SD', r: 3, c: 3 }, { st: 'IA', r: 3, c: 4 }, { st: 'IN', r: 3, c: 5 }, { st: 'OH', r: 3, c: 6 }, { st: 'PA', r: 3, c: 7 }, { st: 'NJ', r: 3, c: 8 }, { st: 'RI', r: 3, c: 9 },
+  { st: 'CA', r: 4, c: 0 }, { st: 'UT', r: 4, c: 1 }, { st: 'CO', r: 4, c: 2 }, { st: 'NE', r: 4, c: 3 }, { st: 'MO', r: 4, c: 4 }, { st: 'KY', r: 4, c: 5 }, { st: 'WV', r: 4, c: 6 }, { st: 'VA', r: 4, c: 7 }, { st: 'MD', r: 4, c: 8 }, { st: 'DE', r: 4, c: 9 },
+  { st: 'AZ', r: 5, c: 1 }, { st: 'NM', r: 5, c: 2 }, { st: 'KS', r: 5, c: 3 }, { st: 'AR', r: 5, c: 4 }, { st: 'TN', r: 5, c: 5 }, { st: 'NC', r: 5, c: 6 }, { st: 'SC', r: 5, c: 7 }, { st: 'DC', r: 5, c: 8 },
+  { st: 'OK', r: 6, c: 3 }, { st: 'LA', r: 6, c: 4 }, { st: 'MS', r: 6, c: 5 }, { st: 'AL', r: 6, c: 6 }, { st: 'GA', r: 6, c: 7 },
+  { st: 'HI', r: 7, c: 0 }, { st: 'TX', r: 7, c: 3 }, { st: 'FL', r: 7, c: 7 }
+];
+
+// Unified Interactive Map Renderer (Overview, Senate, House)
+function renderInteractiveMap(containerId, drawerId, mode) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  const drawer = document.getElementById(drawerId);
+  const gridMatrix = Array(8).fill(null).map(() => Array(11).fill(null));
+  US_CARTOGRAM_LAYOUT.forEach(item => {
+    gridMatrix[item.r][item.c] = item.st;
+  });
+
+  let html = '';
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 11; c++) {
+      const st = gridMatrix[r][c];
+      if (!st) {
+        html += `<div class="cartogram-empty"></div>`;
+        continue;
+      }
+
+      let tileClass = 'cartogram-tile';
+      let statusText = '';
+
+      if (mode === 'overview') {
+        const isSenateBattleground = ['ME', 'TX', 'GA', 'MI', 'NC'].includes(st);
+        const isHouseBattleground = HOUSE_BATTLEGROUND_STATES.has(st);
+        if (isSenateBattleground || isHouseBattleground) tileClass += ' tile-toss';
+        else if (SENATE_CLASS_II[st] === 'Democrat') tileClass += ' tile-dem';
+        else if (SENATE_CLASS_II[st] === 'Republican') tileClass += ' tile-rep';
+        else tileClass += ' tile-dim';
+      } else if (mode === 'senate') {
+        const senParty = SENATE_CLASS_II[st];
+        if (senParty === 'Democrat') tileClass += ' tile-dem';
+        else if (senParty === 'Republican') tileClass += ' tile-rep';
+        else tileClass += ' tile-dim'; // No Senate race in 2026
+      } else if (mode === 'house') {
+        if (HOUSE_BATTLEGROUND_STATES.has(st)) tileClass += ' tile-toss';
+        else tileClass += ' tile-rep';
+      }
+
+      html += `<div class="${tileClass}" id="tile-${mode}-${st}" onclick="handleStateTap('${st}', '${containerId}', '${drawerId}', '${mode}')" title="${US_STATE_NAMES[st]}">${st}</div>`;
     }
+  }
 
-    const clickAction = bg ? `onclick="location.hash='#race/${bg.id}'"` : `onclick="alert('${st} Contested Seat (Class II/House)')"`;
-    return `<div class="${colorClass}" ${clickAction} title="${st}">${st}</div>`;
-  }).join('');
+  container.innerHTML = html;
+}
+
+// Handle State Tap Interaction
+function handleStateTap(st, containerId, drawerId, mode) {
+  const container = document.getElementById(containerId);
+  const drawer = document.getElementById(drawerId);
+  if (!container || !drawer) return;
+
+  // Highlight active tile
+  container.querySelectorAll('.cartogram-tile').forEach(t => t.classList.remove('active-state'));
+  const activeTile = document.getElementById(`tile-${mode}-${st}`);
+  if (activeTile) activeTile.classList.add('active-state');
+
+  const stateName = US_STATE_NAMES[st] || st;
+  const senateRace = (state.races || []).find(r => r.chamber === 'senate' && r.state_code === st);
+  const houseRacesForState = (state.races || []).filter(r => r.chamber === 'house' && r.state_code === st);
+  const hasSenateRace = !!SENATE_CLASS_II[st];
+  const incumbentParty = SENATE_CLASS_II[st];
+
+  let bodyHtml = '';
+
+  if (mode === 'senate') {
+    if (hasSenateRace) {
+      const hasOdds = senateRace && senateRace.dem_win_prob !== null && senateRace.dem_win_prob !== undefined;
+      bodyHtml = `
+        <div class="drawer-header">
+          <div class="drawer-title">🏛️ ${stateName} (${st}) — 2026 Senate Race</div>
+          <span class="badge ${incumbentParty === 'Democrat' ? 'badge-dem' : 'badge-rep'}">${incumbentParty} Seat Defending</span>
+        </div>
+        <div class="drawer-body">
+          <p>Class II Senate seat on the ballot. Incumbent Party: <strong>${incumbentParty}</strong>.</p>
+          <div style="margin-top:6px;">
+            ${hasOdds ? `<strong>Live Prediction Odds:</strong> Dem ${senateRace.dem_win_prob}% vs Rep ${senateRace.rep_win_prob}%` : `<em>⏳ Prediction Market Odds Pending (No live contract yet)</em>`}
+          </div>
+          <div style="margin-top:10px; display:flex; gap:8px;">
+            <button class="btn btn-primary btn-sm" onclick="location.hash='#race/senate-${st.toLowerCase()}'">Inspect Candidates & Dossier →</button>
+            <button class="btn btn-secondary btn-sm" onclick="clearSenateFilter()">Show All Races</button>
+          </div>
+        </div>
+      `;
+      // Also filter Senate grid below to this state
+      filterSenateRacesByState(st);
+    } else {
+      bodyHtml = `
+        <div class="drawer-header">
+          <div class="drawer-title">🏛️ ${stateName} (${st})</div>
+          <span class="badge badge-dim">Safe / No 2026 Senate Race</span>
+        </div>
+        <div class="drawer-body">
+          <p>This state holds Class I or Class III Senate seats and does <strong>not</strong> have a regular Senate election in 2026.</p>
+          <button class="btn btn-secondary btn-sm" style="margin-top:8px;" onclick="clearSenateFilter()">Show All Contested Races</button>
+        </div>
+      `;
+    }
+  } else if (mode === 'house') {
+    const isBattleground = HOUSE_BATTLEGROUND_STATES.has(st);
+    bodyHtml = `
+      <div class="drawer-header">
+        <div class="drawer-title">🗳️ ${stateName} (${st}) — Congressional Delegation</div>
+        <span class="badge ${isBattleground ? 'badge-toss' : 'badge-rep'}">${isBattleground ? 'Key Battleground State' : '435 District Contest'}</span>
+      </div>
+      <div class="drawer-body">
+        <p>All congressional districts in ${stateName} are contested in the battle for the 218-seat House majority.</p>
+        <div style="margin-top:10px; display:flex; gap:8px;">
+          <button class="btn btn-primary btn-sm" onclick="filterHouseRacesByState('${st}')">View ${st} Districts Below ↓</button>
+          <button class="btn btn-secondary btn-sm" onclick="clearHouseFilter()">Show All Districts</button>
+        </div>
+      </div>
+    `;
+    filterHouseRacesByState(st);
+  } else {
+    // Overview mode
+    bodyHtml = `
+      <div class="drawer-header">
+        <div class="drawer-title">📍 ${stateName} (${st}) Contested Seats</div>
+        <span class="badge badge-toss">2026 Midterm Pulse</span>
+      </div>
+      <div class="drawer-body">
+        <p>
+          ${hasSenateRace ? `• <strong>Senate:</strong> Class II seat up for election (${incumbentParty} defending).` : `• <strong>Senate:</strong> No regular Senate race in 2026.`}<br>
+          • <strong>House:</strong> Contested congressional districts on the ballot.
+        </p>
+        <div style="margin-top:10px; display:flex; gap:8px;">
+          ${hasSenateRace ? `<button class="btn btn-primary btn-sm" onclick="location.hash='#race/senate-${st.toLowerCase()}'">View Senate Race →</button>` : ''}
+          <button class="btn btn-secondary btn-sm" onclick="state.pendingHouseFilter='${st}'; location.hash='#house';">Explore House Districts →</button>
+        </div>
+      </div>
+    `;
+  }
+
+  drawer.innerHTML = bodyHtml;
+  drawer.style.display = 'block';
+}
+
+function filterSenateRacesByState(st) {
+  const races = state.senateRaces || state.races || [];
+  const filtered = races.filter(r => r.chamber === 'senate' && r.state_code === st);
+  const label = document.getElementById('senate-active-filter-label');
+  if (label) label.textContent = `${st} Contested Race (${filtered.length})`;
+  renderSenateGrid(filtered.length > 0 ? filtered : races);
+}
+
+function clearSenateFilter() {
+  const drawer = document.getElementById('drawer-senate');
+  if (drawer) drawer.style.display = 'none';
+  const container = document.getElementById('map-senate-container');
+  if (container) container.querySelectorAll('.cartogram-tile').forEach(t => t.classList.remove('active-state'));
+  filterSenateRaces('all');
+}
+
+function filterHouseRacesByState(st) {
+  const races = state.houseRaces || state.races || [];
+  const filtered = races.filter(r => (r.chamber === 'house' || !r.chamber) && r.state_code === st);
+  const label = document.getElementById('house-active-filter-label');
+  if (label) label.textContent = `${st} Districts (${filtered.length})`;
+  const container = document.getElementById('house-races-grid');
+  if (container) {
+    if (filtered.length === 0) {
+      container.innerHTML = `<div style="text-align:center;padding:16px;color:var(--text-dim);">No contested House races recorded for ${st}.</div>`;
+    } else {
+      renderHouseGrid(filtered);
+    }
+  }
+}
+
+function clearHouseFilter() {
+  const drawer = document.getElementById('drawer-house');
+  if (drawer) drawer.style.display = 'none';
+  const container = document.getElementById('map-house-container');
+  if (container) container.querySelectorAll('.cartogram-tile').forEach(t => t.classList.remove('active-state'));
+  const label = document.getElementById('house-active-filter-label');
+  if (label) label.textContent = '435 Districts';
+  renderHouseGrid(state.houseRaces || state.races || []);
 }
 
 // -------------------------------------------------------------
@@ -246,6 +441,9 @@ async function loadSenateView() {
     const races = await res.json();
     state.races = races;
     renderSenateGrid(races);
+
+    // Render Senate Interactive Map
+    renderInteractiveMap('map-senate-container', 'drawer-senate', 'senate');
 
     document.getElementById('senate-search-input').oninput = (e) => {
       const q = e.target.value.toLowerCase();
@@ -259,6 +457,9 @@ async function loadSenateView() {
 
 function filterSenateRaces(filter) {
   state.currentFilter = filter;
+  const label = document.getElementById('senate-active-filter-label');
+  if (label) label.textContent = filter === 'all' ? 'All Contested' : filter.toUpperCase();
+
   let filtered = [...state.races];
   if (filter === 'battleground') filtered = filtered.filter(r => r.is_battleground);
   else if (filter === 'tossup') filtered = filtered.filter(r => r.rating === 'tossup');
@@ -311,31 +512,46 @@ async function loadHouseView() {
   try {
     const res = await fetch('/api/races?chamber=house');
     const races = await res.json();
-    const container = document.getElementById('house-races-grid');
+    state.houseRaces = races;
 
-    const render = (list) => {
-      container.innerHTML = list.map(r => `
-        <div class="race-card" onclick="location.hash='#race/${r.id}'">
-          <div class="race-header">
-            <span class="state-flag">${r.title}</span>
-            <span class="badge badge-toss">District ${r.district_num || 1}</span>
-          </div>
-          <div style="font-size:0.8rem; color:var(--text-muted);">
-            Incumbent Party: <strong style="color:var(--text-main);">${r.current_holder_party || 'Competitive'}</strong>
-          </div>
-        </div>
-      `).join('');
-    };
+    // Render House Interactive Map
+    renderInteractiveMap('map-house-container', 'drawer-house', 'house');
 
-    render(races);
+    if (state.pendingHouseFilter) {
+      const targetState = state.pendingHouseFilter;
+      state.pendingHouseFilter = null;
+      handleStateTap(targetState, 'map-house-container', 'drawer-house', 'house');
+    } else {
+      renderHouseGrid(races);
+    }
 
     document.getElementById('house-search-input').oninput = (e) => {
       const q = e.target.value.toLowerCase();
-      render(races.filter(r => r.title.toLowerCase().includes(q) || r.state_code.toLowerCase().includes(q)));
+      renderHouseGrid(races.filter(r => r.title.toLowerCase().includes(q) || r.state_code.toLowerCase().includes(q)));
     };
   } catch (err) {
     console.error('Error loading House races:', err);
   }
+}
+
+function renderHouseGrid(list) {
+  const container = document.getElementById('house-races-grid');
+  if (!container) return;
+  if (!list || list.length === 0) {
+    container.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text-dim);">No districts found.</div>`;
+    return;
+  }
+  container.innerHTML = list.map(r => `
+    <div class="race-card" onclick="location.hash='#race/${r.id}'">
+      <div class="race-header">
+        <span class="state-flag">${r.title}</span>
+        <span class="badge badge-toss">District ${r.district_num || 1}</span>
+      </div>
+      <div style="font-size:0.8rem; color:var(--text-muted);">
+        Incumbent Party: <strong style="color:var(--text-main);">${r.current_holder_party || 'Competitive'}</strong>
+      </div>
+    </div>
+  `).join('');
 }
 
 // -------------------------------------------------------------

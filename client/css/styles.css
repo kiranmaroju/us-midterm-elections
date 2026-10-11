@@ -497,44 +497,158 @@ body.light-theme .bottom-nav {
   margin-top: 6px;
 }
 
-/* Hex Map Cartogram */
-.hex-map-container {
+/* ==========================================================================
+   INTERACTIVE US CARTOGRAM MAP COMPONENT & STATE DRAWER
+   ========================================================================== */
+
+.cartogram-wrapper {
   overflow-x: auto;
-  padding: 12px 0;
+  padding: 10px 0 6px;
   display: flex;
   justify-content: center;
+  -webkit-overflow-scrolling: touch;
 }
 
-.hex-grid {
+.cartogram-grid {
   display: grid;
-  grid-template-columns: repeat(11, 28px);
-  gap: 4px;
+  grid-template-columns: repeat(11, 32px);
+  grid-template-rows: repeat(8, 32px);
+  gap: 5px;
   margin: 0 auto;
+  user-select: none;
 }
 
-.hex-node {
-  width: 28px;
-  height: 28px;
+@media (min-width: 480px) {
+  .cartogram-grid {
+    grid-template-columns: repeat(11, 38px);
+    grid-template-rows: repeat(8, 38px);
+    gap: 6px;
+  }
+}
+
+.cartogram-tile {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 0.65rem;
-  font-weight: 700;
-  border-radius: 6px;
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 800;
+  border-radius: 7px;
   cursor: pointer;
   background: #334155;
   color: #fff;
-  transition: transform 0.15s ease;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
-.hex-node:hover {
+.cartogram-tile:hover {
+  transform: translateY(-2px) scale(1.1);
+  z-index: 5;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.cartogram-tile.active-state {
+  outline: 2px solid #fbbf24;
+  outline-offset: 2px;
   transform: scale(1.15);
-  z-index: 2;
+  z-index: 10;
+  box-shadow: 0 0 14px rgba(251, 191, 36, 0.6);
 }
 
-.hex-dem { background: var(--dem-blue); }
-.hex-rep { background: var(--rep-red); }
-.hex-toss { background: var(--toss-amber); }
+.tile-dem {
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.tile-rep {
+  background: linear-gradient(135deg, #b91c1c, #ef4444);
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.tile-toss {
+  background: linear-gradient(135deg, #b45309, #f59e0b);
+  border-color: rgba(245, 158, 11, 0.5);
+}
+
+.tile-dim {
+  background: #1e293b;
+  color: #64748b;
+  border-color: rgba(255, 255, 255, 0.04);
+  opacity: 0.45;
+}
+
+.tile-dim:hover {
+  opacity: 0.8;
+}
+
+.cartogram-empty {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* State Details Drawer */
+.state-drawer {
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  animation: slideDown 0.25s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.drawer-title {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.drawer-body {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 10px;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+.legend-box {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+.legend-dem { background: var(--dem-blue); }
+.legend-rep { background: var(--rep-red); }
+.legend-toss { background: var(--toss-amber); }
+.legend-dim { background: #334155; }
 
 /* Admin Studio Styles */
 .admin-badge {
@@ -666,4 +780,159 @@ body.light-theme .bottom-nav {
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-dim);
+}
+
+/* ============================================================
+   Interactive US Cartogram Map Components (Overview, Senate, House)
+   ============================================================ */
+.cartogram-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 6px 0;
+  margin: 10px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.cartogram-grid {
+  display: grid;
+  grid-template-columns: repeat(11, 32px);
+  grid-template-rows: repeat(8, 32px);
+  gap: 5px;
+  user-select: none;
+}
+
+@media (max-width: 480px) {
+  .cartogram-grid {
+    grid-template-columns: repeat(11, 26px);
+    grid-template-rows: repeat(8, 26px);
+    gap: 3px;
+  }
+}
+
+.cartogram-empty {
+  visibility: hidden;
+}
+
+.cartogram-tile {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 800;
+  font-family: var(--font-heading);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 480px) {
+  .cartogram-tile {
+    font-size: 0.62rem;
+  }
+}
+
+.cartogram-tile:hover {
+  transform: scale(1.15);
+  z-index: 10;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.cartogram-tile.active-state {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
+  transform: scale(1.18);
+  z-index: 20;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.7);
+}
+
+.cartogram-tile.tile-dem {
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
+  color: #ffffff;
+  border-color: rgba(96, 165, 250, 0.5);
+}
+
+.cartogram-tile.tile-rep {
+  background: linear-gradient(135deg, #b91c1c, #dc2626);
+  color: #ffffff;
+  border-color: rgba(248, 113, 113, 0.5);
+}
+
+.cartogram-tile.tile-toss {
+  background: linear-gradient(135deg, #b45309, #d97706);
+  color: #ffffff;
+  border-color: rgba(251, 191, 36, 0.5);
+}
+
+.cartogram-tile.tile-dim {
+  background: rgba(30, 41, 59, 0.6);
+  color: #64748b;
+  border-color: rgba(255, 255, 255, 0.04);
+}
+
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
+.legend-box {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+.legend-box.legend-dem { background: var(--dem-blue); }
+.legend-box.legend-rep { background: var(--rep-red); }
+.legend-box.legend-toss { background: #d97706; }
+.legend-box.legend-dim { background: #334155; }
+
+.state-drawer {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--brand-primary);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  margin-top: 12px;
+  animation: drawerSlide 0.2s ease-out;
+}
+
+@keyframes drawerSlide {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.drawer-title {
+  font-family: var(--font-heading);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.drawer-body {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.45;
 }

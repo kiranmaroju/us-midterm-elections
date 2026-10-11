@@ -213,24 +213,26 @@
         </div>
       </div>
 
-      <!-- Hexagonal Seat Cartogram Visualizer -->
-      <div class="card">
+      <!-- Interactive Battleground Map (Overview) -->
+      <div class="card" id="card-overview-map">
         <div class="card-title">
-          <span>Interactive Battleground Map</span>
-          <span class="badge badge-toss">Touch a State</span>
+          <span>Interactive US Battleground Map</span>
+          <span class="badge badge-toss">Tap Any State</span>
         </div>
         <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px;">
-          Equal-area cartogram representing contested Senate & battleground seats.
+          Equal-area cartogram representing contested Senate & House battlegrounds. Tap a state to inspect seat status.
         </p>
-        <div class="hex-map-container">
-          <div class="hex-grid" id="hex-grid-container">
+        <div class="cartogram-wrapper">
+          <div class="cartogram-grid" id="map-overview-container">
             <!-- Rendered by JS -->
           </div>
         </div>
-        <div style="display:flex; justify-content:center; gap:12px; margin-top:8px; font-size:0.75rem; color:var(--text-muted);">
-          <span><span style="color:var(--dem-blue)">■</span> Lean D</span>
-          <span><span style="color:var(--toss-amber)">■</span> Toss-up</span>
-          <span><span style="color:var(--rep-red)">■</span> Lean R</span>
+        <!-- State Details Drawer -->
+        <div class="state-drawer" id="drawer-overview" style="display: none;"></div>
+        <div class="map-legend">
+          <span><span class="legend-box legend-dem"></span> Dem Held</span>
+          <span><span class="legend-box legend-toss"></span> Battleground / Flip Risk</span>
+          <span><span class="legend-box legend-rep"></span> Rep Held</span>
         </div>
       </div>
 
@@ -261,10 +263,32 @@
          VIEW 2: SENATE RACES
          ======================================================== -->
     <section id="view-senate" class="app-view" style="display: none;">
+      <!-- Interactive Senate Map (33 Contested Seats) -->
+      <div class="card" id="card-senate-map">
+        <div class="card-title">
+          <span>Interactive 2026 Senate Map (33 Contested Seats)</span>
+          <span class="badge badge-dem">Class II Seats</span>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px;">
+          <strong>33 Senate seats are up for election</strong> (20 defending Republicans, 13 defending Democrats). Tap a highlighted state to filter races below.
+        </p>
+        <div class="cartogram-wrapper">
+          <div class="cartogram-grid" id="map-senate-container">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+        <div class="state-drawer" id="drawer-senate" style="display: none;"></div>
+        <div class="map-legend">
+          <span><span class="legend-box legend-dem"></span> Dem Defending (13)</span>
+          <span><span class="legend-box legend-rep"></span> Rep Defending (20)</span>
+          <span><span class="legend-box legend-dim"></span> No 2026 Senate Race (17)</span>
+        </div>
+      </div>
+
       <div class="card">
         <div class="card-title">
-          <span>2026 US Senate Races</span>
-          <span class="badge badge-dem">Class II Contested</span>
+          <span>2026 US Senate Races List</span>
+          <span class="badge badge-toss" id="senate-active-filter-label">All Contested</span>
         </div>
         <div class="search-container">
           <span class="search-icon">🔍</span>
@@ -287,10 +311,31 @@
          VIEW 3: HOUSE RACES
          ======================================================== -->
     <section id="view-house" class="app-view" style="display: none;">
+      <!-- Interactive House Map (435 Districts) -->
+      <div class="card" id="card-house-map">
+        <div class="card-title">
+          <span>Interactive 50-State House Map (435 Districts)</span>
+          <span class="badge badge-rep">Battle for 218</span>
+        </div>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px;">
+          All 435 congressional districts across all 50 states are on the ballot. Tap a state to inspect its congressional delegation.
+        </p>
+        <div class="cartogram-wrapper">
+          <div class="cartogram-grid" id="map-house-container">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+        <div class="state-drawer" id="drawer-house" style="display: none;"></div>
+        <div class="map-legend">
+          <span><span class="legend-box legend-toss"></span> Battleground Districts (CA, NY, PA, MI, TX, AZ, OH)</span>
+          <span><span class="legend-box legend-rep"></span> All 50 States Contested</span>
+        </div>
+      </div>
+
       <div class="card">
         <div class="card-title">
-          <span>House Congressional Districts</span>
-          <span class="badge badge-rep">Battle for 218</span>
+          <span>House Congressional Districts List</span>
+          <span class="badge badge-toss" id="house-active-filter-label">435 Districts</span>
         </div>
         <div class="search-container">
           <span class="search-icon">🔍</span>
