@@ -107,20 +107,33 @@ async function loadOverview() {
     const data = await res.json();
     state.overview = data;
 
-    // Senate Balance Bar
+    // Senate Balance & Overall Position
     const senate = data.national.senate;
-    document.getElementById('senate-dem-prob').textContent = `${senate.demProb}%`;
-    document.getElementById('senate-rep-prob').textContent = `${senate.repProb}%`;
-    document.getElementById('bar-senate-dem').style.width = `${senate.demProb}%`;
-    document.getElementById('bar-senate-rep').style.width = `${senate.repProb}%`;
-    document.getElementById('senate-tossup-count').textContent = `Toss-ups: ${senate.tossups}`;
+    if (senate.demProb !== null && senate.repProb !== null) {
+      document.getElementById('senate-odds-display').style.display = 'block';
+      document.getElementById('senate-no-odds').style.display = 'none';
+      document.getElementById('senate-dem-prob').textContent = `${senate.demProb}%`;
+      document.getElementById('senate-rep-prob').textContent = `${senate.repProb}%`;
+      document.getElementById('bar-senate-dem').style.width = `${senate.demProb}%`;
+      document.getElementById('bar-senate-rep').style.width = `${senate.repProb}%`;
+    } else {
+      document.getElementById('senate-odds-display').style.display = 'none';
+      document.getElementById('senate-no-odds').style.display = 'block';
+    }
 
-    // House Balance Bar
+    // House Balance & Overall Position
     const house = data.national.house;
-    document.getElementById('house-dem-prob').textContent = `${house.demProb}%`;
-    document.getElementById('house-rep-prob').textContent = `${house.repProb}%`;
-    document.getElementById('bar-house-dem').style.width = `${house.demProb}%`;
-    document.getElementById('bar-house-rep').style.width = `${house.repProb}%`;
+    if (house.demProb !== null && house.repProb !== null) {
+      document.getElementById('house-odds-display').style.display = 'block';
+      document.getElementById('house-no-odds').style.display = 'none';
+      document.getElementById('house-dem-prob').textContent = `${house.demProb}%`;
+      document.getElementById('house-rep-prob').textContent = `${house.repProb}%`;
+      document.getElementById('bar-house-dem').style.width = `${house.demProb}%`;
+      document.getElementById('bar-house-rep').style.width = `${house.repProb}%`;
+    } else {
+      document.getElementById('house-odds-display').style.display = 'none';
+      document.getElementById('house-no-odds').style.display = 'block';
+    }
 
     // Render Top Battlegrounds
     renderTopBattlegrounds(data.topBattlegrounds);
@@ -144,8 +157,7 @@ function renderTopBattlegrounds(races) {
   }
 
   container.innerHTML = races.map(r => {
-    const demProb = r.dem_win_prob || 50;
-    const repProb = r.rep_win_prob || 50;
+    const hasOdds = r.dem_win_prob !== null && r.dem_win_prob !== undefined && r.rep_win_prob !== null && r.rep_win_prob !== undefined;
     const badgeClass = r.rating === 'tossup' ? 'badge-toss' : r.rating.includes('d') ? 'badge-dem' : 'badge-rep';
     const ratingLabel = r.rating.replace('_', ' ').toUpperCase();
 
@@ -158,14 +170,20 @@ function renderTopBattlegrounds(races) {
         <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:6px;">
           Current Incumbent: <strong style="color:var(--text-main);">${r.current_holder_party || 'Contested'}</strong>
         </div>
-        <div class="bar-track" style="height: 12px;">
-          <div class="bar-segment-dem" style="width: ${demProb}%;"></div>
-          <div class="bar-segment-rep" style="width: ${repProb}%;"></div>
-        </div>
-        <div class="prob-meter">
-          <span style="color:var(--dem-blue);">Dem: ${demProb}%</span>
-          <span style="color:var(--rep-red);">Rep: ${repProb}%</span>
-        </div>
+        ${hasOdds ? `
+          <div class="bar-track" style="height: 12px;">
+            <div class="bar-segment-dem" style="width: ${r.dem_win_prob}%;"></div>
+            <div class="bar-segment-rep" style="width: ${r.rep_win_prob}%;"></div>
+          </div>
+          <div class="prob-meter">
+            <span style="color:var(--dem-blue);">Dem: ${r.dem_win_prob}%</span>
+            <span style="color:var(--rep-red);">Rep: ${r.rep_win_prob}%</span>
+          </div>
+        ` : `
+          <div style="font-size:0.72rem; color:var(--text-dim); margin-top:8px; padding:6px; background:var(--bg-surface); border-radius:var(--radius-sm); text-align:center;">
+            ⏳ Prediction Market Odds Pending
+          </div>
+        `}
       </div>
     `;
   }).join('');
@@ -256,25 +274,34 @@ function renderSenateGrid(races) {
     return;
   }
 
-  container.innerHTML = races.map(r => `
-    <div class="race-card" onclick="location.hash='#race/${r.id}'">
-      <div class="race-header">
-        <span class="state-flag">${r.state_code} • ${r.title.replace('2026 ', '')}</span>
-        <span class="badge ${r.rating === 'tossup' ? 'badge-toss' : r.rating.includes('d') ? 'badge-dem' : 'badge-rep'}">${r.rating.replace('_', ' ').toUpperCase()}</span>
+  container.innerHTML = races.map(r => {
+    const hasOdds = r.dem_win_prob !== null && r.dem_win_prob !== undefined && r.rep_win_prob !== null && r.rep_win_prob !== undefined;
+    return `
+      <div class="race-card" onclick="location.hash='#race/${r.id}'">
+        <div class="race-header">
+          <span class="state-flag">${r.state_code} • ${r.title.replace('2026 ', '')}</span>
+          <span class="badge ${r.rating === 'tossup' ? 'badge-toss' : r.rating.includes('d') ? 'badge-dem' : 'badge-rep'}">${r.rating.replace('_', ' ').toUpperCase()}</span>
+        </div>
+        <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:6px;">
+          Incumbent: <strong>${r.current_holder_party || 'Contested'}</strong>
+        </div>
+        ${hasOdds ? `
+          <div class="bar-track" style="height: 12px;">
+            <div class="bar-segment-dem" style="width: ${r.dem_win_prob}%;"></div>
+            <div class="bar-segment-rep" style="width: ${r.rep_win_prob}%;"></div>
+          </div>
+          <div class="prob-meter">
+            <span style="color:var(--dem-blue);">Dem: ${r.dem_win_prob}%</span>
+            <span style="color:var(--rep-red);">Rep: ${r.rep_win_prob}%</span>
+          </div>
+        ` : `
+          <div style="font-size:0.72rem; color:var(--text-dim); margin-top:8px; padding:6px; background:var(--bg-surface); border-radius:var(--radius-sm); text-align:center;">
+            ⏳ Prediction Market Odds Pending
+          </div>
+        `}
       </div>
-      <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:6px;">
-        Incumbent: <strong>${r.current_holder_party || 'Contested'}</strong>
-      </div>
-      <div class="bar-track" style="height: 12px;">
-        <div class="bar-segment-dem" style="width: ${r.dem_win_prob || 50}%;"></div>
-        <div class="bar-segment-rep" style="width: ${r.rep_win_prob || 50}%;"></div>
-      </div>
-      <div class="prob-meter">
-        <span style="color:var(--dem-blue);">Dem: ${r.dem_win_prob || 50}%</span>
-        <span style="color:var(--rep-red);">Rep: ${r.rep_win_prob || 50}%</span>
-      </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 // -------------------------------------------------------------
@@ -357,10 +384,19 @@ async function openRaceModal(raceId) {
 
     document.getElementById('modal-race-title').textContent = race.title;
     document.getElementById('modal-race-rating').textContent = race.rating.replace('_', ' ').toUpperCase();
-    document.getElementById('modal-dem-prob').textContent = `${race.dem_win_prob || 50}%`;
-    document.getElementById('modal-rep-prob').textContent = `${race.rep_win_prob || 50}%`;
-    document.getElementById('modal-bar-dem').style.width = `${race.dem_win_prob || 50}%`;
-    document.getElementById('modal-bar-rep').style.width = `${race.rep_win_prob || 50}%`;
+
+    const hasOdds = race.dem_win_prob !== null && race.dem_win_prob !== undefined && race.rep_win_prob !== null && race.rep_win_prob !== undefined;
+    if (hasOdds) {
+      document.getElementById('modal-dem-prob').textContent = `${race.dem_win_prob}%`;
+      document.getElementById('modal-rep-prob').textContent = `${race.rep_win_prob}%`;
+      document.getElementById('modal-bar-dem').style.width = `${race.dem_win_prob}%`;
+      document.getElementById('modal-bar-rep').style.width = `${race.rep_win_prob}%`;
+    } else {
+      document.getElementById('modal-dem-prob').textContent = `Pending`;
+      document.getElementById('modal-rep-prob').textContent = `Pending`;
+      document.getElementById('modal-bar-dem').style.width = `0%`;
+      document.getElementById('modal-bar-rep').style.width = `0%`;
+    }
 
     // Candidates Showdown
     const cContainer = document.getElementById('modal-candidates-container');

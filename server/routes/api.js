@@ -20,28 +20,45 @@ router.get('/overview', async (req, res) => {
       LIMIT 6;
     `);
 
-    // Calculate Senate balance
+    // Calculate authentic Senate and House overall composition
     const senateRaces = races.filter(r => r.chamber === 'senate');
     const houseRaces = races.filter(r => r.chamber === 'house');
 
-    const nationalSenate = races.find(r => r.id === 'senate-national') || { dem_win_prob: 48.5, rep_win_prob: 51.5 };
-    const nationalHouse = races.find(r => r.id === 'house-national') || { dem_win_prob: 52.0, rep_win_prob: 48.0 };
+    // Count incumbent seat distribution from sitting Congress members
+    const senateIncumbents = candidates.filter(c => c.is_incumbent && c.race_id.startsWith('senate-'));
+    const repSenateUp = senateIncumbents.filter(c => c.party === 'Republican').length || 20;
+    const demSenateUp = senateIncumbents.filter(c => c.party === 'Democrat' || c.party === 'Independent').length || 13;
+
+    // Senate Overall Position (100 total, 51 for majority)
+    // Non-contested: 34 Rep, 33 Dem/Ind. Contested Class II: 33 seats (20 Rep, 13 Dem)
+    const senateOverall = {
+      totalSeats: 100,
+      majorityThreshold: 51,
+      nonContested: { rep: 34, dem: 33 },
+      contestedClassII: { total: 33, repHeld: repSenateUp, demHeld: demSenateUp },
+      currentControl: 'Republican Majority (53R - 47D/I)',
+      demProb: nationalSenate?.dem_win_prob !== null && nationalSenate?.dem_win_prob !== undefined ? Number(nationalSenate.dem_win_prob) : null,
+      repProb: nationalSenate?.rep_win_prob !== null && nationalSenate?.rep_win_prob !== undefined ? Number(nationalSenate.rep_win_prob) : null,
+      totalContested: senateRaces.length,
+      battlegroundCount: senateRaces.filter(r => r.is_battleground).length
+    };
+
+    // House Overall Position (435 total, 218 for majority)
+    const houseOverall = {
+      totalSeats: 435,
+      majorityThreshold: 218,
+      allSeatsContested: true,
+      currentControl: 'Republican Majority (220R - 213D, 2 Vacant)',
+      demProb: nationalHouse?.dem_win_prob !== null && nationalHouse?.dem_win_prob !== undefined ? Number(nationalHouse.dem_win_prob) : null,
+      repProb: nationalHouse?.rep_win_prob !== null && nationalHouse?.rep_win_prob !== undefined ? Number(nationalHouse.rep_win_prob) : null,
+      battlegroundDistricts: houseRaces.filter(r => r.is_battleground).length
+    };
 
     res.json({
       timestamp: new Date().toISOString(),
       national: {
-        senate: {
-          demProb: nationalSenate.dem_win_prob || 49.0,
-          repProb: nationalSenate.rep_win_prob || 51.0,
-          totalContested: senateRaces.length,
-          tossups: senateRaces.filter(r => r.rating === 'tossup' || r.is_battleground).length
-        },
-        house: {
-          demProb: nationalHouse.dem_win_prob || 52.0,
-          repProb: nationalHouse.rep_win_prob || 48.0,
-          totalContested: 435,
-          tossups: houseRaces.filter(r => r.rating === 'tossup').length || 24
-        }
+        senate: senateOverall,
+        house: houseOverall
       },
       topBattlegrounds: races.filter(r => r.is_battleground).slice(0, 8),
       breakingNews: latestNews,
@@ -105,6 +122,7 @@ router.get('/races/:id', async (req, res) => {
     `, [race.state_code, race.chamber]);
 
     // Structured FAQ for Google Rich Snippets & AI Search Extraction
+    const hasOdds = race.dem_win_prob !== null && race.dem_win_prob !== undefined && race.rep_win_prob !== null && race.rep_win_prob !== undefined;
     const faqs = [
       {
         question: `Who is running in the ${race.title}?`,
@@ -114,7 +132,9 @@ router.get('/races/:id', async (req, res) => {
       },
       {
         question: `What are the current win odds for ${race.title}?`,
-        answer: `As of the latest prediction market aggregates, Democrats stand at ${race.dem_win_prob || 50}% and Republicans at ${race.rep_win_prob || 50}%. Race rating: ${race.rating?.replace('_', ' ').toUpperCase()}.`
+        answer: hasOdds
+          ? `As of the latest prediction market aggregates, Democrats stand at ${race.dem_win_prob}% and Republicans at ${race.rep_win_prob}%. Race rating: ${race.rating?.replace('_', ' ').toUpperCase()}.`
+          : `Live prediction market odds are not yet open for this specific race. Official ratings and crowd odds will update as primary filings finalize.`
       }
     ];
 

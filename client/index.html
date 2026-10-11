@@ -102,6 +102,7 @@
           <span>LIVE</span>
         </div>
         <button class="icon-btn" id="theme-toggle" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">🌙</button>
+        <a href="#admin" class="icon-btn" title="Admin Access" style="text-decoration: none;">🔒</a>
       </div>
     </div>
   </header>
@@ -113,48 +114,101 @@
          VIEW 1: NATIONAL OVERVIEW & BALANCE OF POWER
          ======================================================== -->
     <section id="view-overview" class="app-view">
-      <!-- Senate Balance of Power Card -->
+      <!-- Senate Overall Position & Balance of Power Card -->
       <div class="card" id="card-senate-balance">
         <div class="card-title">
-          <span>Senate Balance of Power</span>
-          <span class="badge badge-toss" id="senate-tossup-count">Toss-ups: 7</span>
+          <span>US Senate Overall Position (100 Seats)</span>
+          <span class="badge badge-rep" id="senate-control-badge">53R - 47D Current Control</span>
         </div>
-        <p style="font-size: 0.82rem; color: var(--text-muted);">
-          Market consensus for Senate Control (33-35 contested seats)
+        <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 8px;">
+          <strong>51 seats needed for Majority</strong>. 67 seats are not up for re-election (34R, 33D). <strong>33 Class II seats are contested in 2026</strong> (20 held by Republicans, 13 by Democrats).
         </p>
-        <div class="balance-bar-container">
-          <div class="balance-labels">
-            <span style="color: var(--dem-blue);">Democrats: <strong id="senate-dem-prob">--%</strong></span>
-            <span style="color: var(--rep-red);"><strong id="senate-rep-prob">--%</strong> :Republicans</span>
+
+        <!-- Seat Breakdown Pills -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 10px 0; font-size: 0.76rem; text-align: center;">
+          <div style="background: var(--bg-surface); padding: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+            <div style="color: var(--text-dim); font-size: 0.7rem;">Safe / Not Contested</div>
+            <strong style="color: var(--text-main);">34 R • 33 D</strong>
           </div>
-          <div class="bar-track">
-            <div class="bar-segment-dem" id="bar-senate-dem" style="width: 50%;">Dem</div>
-            <div class="bar-segment-rep" id="bar-senate-rep" style="width: 50%;">Rep</div>
+          <div style="background: var(--bg-surface); padding: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+            <div style="color: var(--text-dim); font-size: 0.7rem;">Contested 2026</div>
+            <strong style="color: var(--toss-amber);">33 Seats</strong>
+          </div>
+          <div style="background: var(--bg-surface); padding: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+            <div style="color: var(--text-dim); font-size: 0.7rem;">Defending in 2026</div>
+            <strong style="color: var(--text-main);">20 R • 13 D</strong>
           </div>
         </div>
-        <div style="font-size: 0.72rem; color: var(--text-dim); margin-top: 6px; display: flex; justify-content: space-between;">
-          <span>Data: Manifold Markets Real-Time Consensus</span>
-          <span id="senate-sync-time">Updated Live</span>
+
+        <!-- Real-Time Prediction Market Consensus -->
+        <div id="senate-odds-section" style="margin-top: 10px;">
+          <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">
+            2026 Senate Majority Win Odds (Live Prediction Markets):
+          </div>
+          <div id="senate-odds-display">
+            <div class="balance-labels">
+              <span style="color: var(--dem-blue);">Democrats: <strong id="senate-dem-prob">--%</strong></span>
+              <span style="color: var(--rep-red);"><strong id="senate-rep-prob">--%</strong> :Republicans</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-segment-dem" id="bar-senate-dem" style="width: 50%;">Dem</div>
+              <div class="bar-segment-rep" id="bar-senate-rep" style="width: 50%;">Rep</div>
+            </div>
+          </div>
+          <div id="senate-no-odds" style="display:none; padding:10px; background:var(--bg-surface); border-radius:var(--radius-sm); text-align:center; font-size:0.8rem; color:var(--text-dim);">
+            ⏳ Active prediction market contracts pending for this cycle.
+          </div>
+        </div>
+
+        <div style="font-size: 0.7rem; color: var(--text-dim); margin-top: 8px; display: flex; justify-content: space-between;">
+          <span>Source: Official Congress Roster & Manifold Markets</span>
+          <span id="senate-sync-time">Live Sync Active</span>
         </div>
       </div>
 
-      <!-- House Balance of Power Card -->
+      <!-- House Overall Position & Balance of Power Card -->
       <div class="card" id="card-house-balance">
         <div class="card-title">
-          <span>House of Representatives (435 Seats)</span>
-          <span class="badge badge-toss">218 to Win</span>
+          <span>US House Overall Position (435 Seats)</span>
+          <span class="badge badge-toss">218 to Win Majority</span>
         </div>
-        <p style="font-size: 0.82rem; color: var(--text-muted);">
-          Market consensus for House Majority
+        <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 8px;">
+          <strong>All 435 voting seats</strong> across all 50 states are up for re-election. Current composition: 220 Republicans, 213 Democrats, 2 Vacancies.
         </p>
-        <div class="balance-bar-container">
-          <div class="balance-labels">
-            <span style="color: var(--dem-blue);">Democrats: <strong id="house-dem-prob">--%</strong></span>
-            <span style="color: var(--rep-red);"><strong id="house-rep-prob">--%</strong> :Republicans</span>
+
+        <!-- Seat Breakdown Pills -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 10px 0; font-size: 0.76rem; text-align: center;">
+          <div style="background: var(--bg-surface); padding: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+            <div style="color: var(--text-dim); font-size: 0.7rem;">Total Seats Up</div>
+            <strong style="color: var(--text-main);">435 (100%)</strong>
           </div>
-          <div class="bar-track">
-            <div class="bar-segment-dem" id="bar-house-dem" style="width: 50%;">Dem</div>
-            <div class="bar-segment-rep" id="bar-house-rep" style="width: 50%;">Rep</div>
+          <div style="background: var(--bg-surface); padding: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+            <div style="color: var(--text-dim); font-size: 0.7rem;">Majority Needed</div>
+            <strong style="color: var(--brand-primary);">218 Seats</strong>
+          </div>
+          <div style="background: var(--bg-surface); padding: 8px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+            <div style="color: var(--text-dim); font-size: 0.7rem;">Current Margin</div>
+            <strong style="color: var(--rep-red);">+7 GOP Lead</strong>
+          </div>
+        </div>
+
+        <!-- House Live Odds Section -->
+        <div id="house-odds-section" style="margin-top: 10px;">
+          <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); margin-bottom: 4px;">
+            2026 House Majority Win Odds (Live Prediction Markets):
+          </div>
+          <div id="house-odds-display">
+            <div class="balance-labels">
+              <span style="color: var(--dem-blue);">Democrats: <strong id="house-dem-prob">--%</strong></span>
+              <span style="color: var(--rep-red);"><strong id="house-rep-prob">--%</strong> :Republicans</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-segment-dem" id="bar-house-dem" style="width: 50%;">Dem</div>
+              <div class="bar-segment-rep" id="bar-house-rep" style="width: 50%;">Rep</div>
+            </div>
+          </div>
+          <div id="house-no-odds" style="display:none; padding:10px; background:var(--bg-surface); border-radius:var(--radius-sm); text-align:center; font-size:0.8rem; color:var(--text-dim);">
+            ⏳ Active prediction market contracts pending for House control.
           </div>
         </div>
       </div>
@@ -477,10 +531,6 @@
     <a href="#news" class="nav-item" data-view="view-news">
       <span class="nav-icon">📰</span>
       <span>News</span>
-    </a>
-    <a href="#admin" class="nav-item" data-view="view-admin">
-      <span class="nav-icon">⚙️</span>
-      <span>Admin</span>
     </a>
   </nav>
 

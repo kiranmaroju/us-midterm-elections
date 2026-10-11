@@ -72,27 +72,46 @@ export async function fetchManifoldOdds() {
         if (q.includes('democrat')) {
           demProb = Number((m.probability * 100).toFixed(1));
           repProb = Number(((1 - m.probability) * 100).toFixed(1));
-        } else {
+        } else if (q.includes('republican') || q.includes('gop')) {
           repProb = Number((m.probability * 100).toFixed(1));
           demProb = Number(((1 - m.probability) * 100).toFixed(1));
         }
       } else if (q.includes('maine') && q.includes('senate')) {
         raceId = 'senate-me';
-        // E.g. Troy Jackson or Democrat wins Maine Senate
-        demProb = Number((m.probability * 100).toFixed(1));
-        repProb = Number(((1 - m.probability) * 100).toFixed(1));
+        if (q.includes('democrat') || q.includes('troy jackson')) {
+          demProb = Number((m.probability * 100).toFixed(1));
+          repProb = Number(((1 - m.probability) * 100).toFixed(1));
+        } else if (q.includes('susan collins') || q.includes('republican')) {
+          repProb = Number((m.probability * 100).toFixed(1));
+          demProb = Number(((1 - m.probability) * 100).toFixed(1));
+        }
       } else if (q.includes('georgia') && q.includes('senate')) {
         raceId = 'senate-ga';
-        demProb = 52.0;
-        repProb = 48.0;
+        if (q.includes('democrat')) {
+          demProb = Number((m.probability * 100).toFixed(1));
+          repProb = Number(((1 - m.probability) * 100).toFixed(1));
+        } else if (q.includes('republican')) {
+          repProb = Number((m.probability * 100).toFixed(1));
+          demProb = Number(((1 - m.probability) * 100).toFixed(1));
+        }
       } else if (q.includes('michigan') && q.includes('senate')) {
         raceId = 'senate-mi';
-        demProb = 53.5;
-        repProb = 46.5;
+        if (q.includes('democrat')) {
+          demProb = Number((m.probability * 100).toFixed(1));
+          repProb = Number(((1 - m.probability) * 100).toFixed(1));
+        } else if (q.includes('republican')) {
+          repProb = Number((m.probability * 100).toFixed(1));
+          demProb = Number(((1 - m.probability) * 100).toFixed(1));
+        }
       } else if (q.includes('north carolina') && q.includes('senate')) {
         raceId = 'senate-nc';
-        demProb = 47.0;
-        repProb = 53.0;
+        if (q.includes('democrat')) {
+          demProb = Number((m.probability * 100).toFixed(1));
+          repProb = Number(((1 - m.probability) * 100).toFixed(1));
+        } else if (q.includes('republican')) {
+          repProb = Number((m.probability * 100).toFixed(1));
+          demProb = Number(((1 - m.probability) * 100).toFixed(1));
+        }
       }
 
       if (raceId && demProb !== null && repProb !== null) {

@@ -45,7 +45,9 @@ app.get('/llms.txt', async (req, res) => {
     md += `|---|---|---|---|\n`;
 
     for (const r of races) {
-      md += `| ${r.title} | ${r.rating} | ${r.dem_win_prob || 50}% | ${r.rep_win_prob || 50}% |\n`;
+      const demStr = r.dem_win_prob !== null && r.dem_win_prob !== undefined ? `${r.dem_win_prob}%` : 'Pending';
+      const repStr = r.rep_win_prob !== null && r.rep_win_prob !== undefined ? `${r.rep_win_prob}%` : 'Pending';
+      md += `| ${r.title} | ${r.rating} | ${demStr} | ${repStr} |\n`;
     }
 
     md += `\n## Data Sources\n`;
