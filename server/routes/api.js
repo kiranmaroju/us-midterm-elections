@@ -23,6 +23,8 @@ router.get('/overview', async (req, res) => {
     // Calculate authentic Senate and House overall composition
     const senateRaces = races.filter(r => r.chamber === 'senate');
     const houseRaces = races.filter(r => r.chamber === 'house');
+    const nationalSenate = races.find(r => r.id === 'senate-national');
+    const nationalHouse = races.find(r => r.id === 'house-national');
 
     // Count incumbent seat distribution from sitting Congress members
     const senateIncumbents = candidates.filter(c => c.is_incumbent && c.race_id.startsWith('senate-'));
