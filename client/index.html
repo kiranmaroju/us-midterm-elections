@@ -295,11 +295,11 @@
           <input type="text" id="senate-search-input" class="search-input" placeholder="Search state or candidate (e.g. Maine, Cornyn)...">
         </div>
         <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 12px;">
-          <button class="btn btn-secondary btn-sm active-filter" onclick="filterSenateRaces('all')">All</button>
-          <button class="btn btn-secondary btn-sm" onclick="filterSenateRaces('battleground')">Battlegrounds</button>
-          <button class="btn btn-secondary btn-sm" onclick="filterSenateRaces('tossup')">Toss-ups</button>
-          <button class="btn btn-secondary btn-sm" onclick="filterSenateRaces('lean_d')">Lean D</button>
-          <button class="btn btn-secondary btn-sm" onclick="filterSenateRaces('lean_r')">Lean R</button>
+          <button class="btn btn-secondary btn-sm active-filter" onclick="filterSenateRaces('all', this)">All</button>
+          <button class="btn btn-secondary btn-sm" onclick="filterSenateRaces('battleground', this)">Battlegrounds</button>
+          <button class="btn btn-secondary btn-sm" onclick="filterSenateRaces('tossup', this)">Toss-ups</button>
+          <button class="btn btn-secondary btn-sm" onclick="filterSenateRaces('lean_d', this)">Dem Favored</button>
+          <button class="btn btn-secondary btn-sm" onclick="filterSenateRaces('lean_r', this)">Rep Favored</button>
         </div>
         <div class="race-grid" id="senate-races-grid">
           <!-- Rendered by JS -->

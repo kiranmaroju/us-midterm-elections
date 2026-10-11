@@ -455,16 +455,27 @@ async function loadSenateView() {
   }
 }
 
-function filterSenateRaces(filter) {
+function filterSenateRaces(filter, btn) {
   state.currentFilter = filter;
+  if (btn) {
+    document.querySelectorAll('#view-senate .btn-secondary').forEach(b => b.classList.remove('active-filter'));
+    btn.classList.add('active-filter');
+  }
   const label = document.getElementById('senate-active-filter-label');
-  if (label) label.textContent = filter === 'all' ? 'All Contested' : filter.toUpperCase();
+  const labelsMap = {
+    'all': 'All Contested',
+    'battleground': 'Battlegrounds',
+    'tossup': 'Toss-ups',
+    'lean_d': 'Dem Favored',
+    'lean_r': 'Rep Favored'
+  };
+  if (label) label.textContent = labelsMap[filter] || filter.toUpperCase();
 
-  let filtered = [...state.races];
+  let filtered = [...(state.senateRaces || state.races || [])];
   if (filter === 'battleground') filtered = filtered.filter(r => r.is_battleground);
   else if (filter === 'tossup') filtered = filtered.filter(r => r.rating === 'tossup');
-  else if (filter === 'lean_d') filtered = filtered.filter(r => r.rating === 'lean_d' || r.rating === 'solid_d');
-  else if (filter === 'lean_r') filtered = filtered.filter(r => r.rating === 'lean_r' || r.rating === 'solid_r');
+  else if (filter === 'lean_d') filtered = filtered.filter(r => (r.rating || '').includes('d'));
+  else if (filter === 'lean_r') filtered = filtered.filter(r => (r.rating || '').includes('r'));
   renderSenateGrid(filtered);
 }
 
