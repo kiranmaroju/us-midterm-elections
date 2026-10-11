@@ -46,8 +46,8 @@ export async function fetchFecCandidates() {
 
       // Upsert candidate record
       await execute(`
-        INSERT INTO candidates (id, race_id, full_name, party, is_incumbent, fec_id, is_incumbent)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO candidates (id, race_id, full_name, party, is_incumbent, fec_id)
+        VALUES (?, ?, ?, ?, ?, ?)
         ON DUPLICATE KEY UPDATE 
           party = VALUES(party),
           fec_id = VALUES(fec_id);
@@ -57,8 +57,7 @@ export async function fetchFecCandidates() {
         fullName,
         party,
         cand.incumbent_challenge_full === 'Incumbent',
-        cand.candidate_id,
-        cand.incumbent_challenge_full === 'Incumbent'
+        cand.candidate_id
       ]);
 
       recordsUpdated++;
